@@ -255,7 +255,7 @@ function getAll() {
     return temperatureChar.startNotifications();
   })
   .then(() => {
-    myCharacteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
   })
 
   /** Works in Chrome OS not on Android
@@ -284,7 +284,7 @@ function getAll() {
     return temperatureChar.startNotifications();
   })
   .then(() => {
-    myCharacteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
   })
   **/
 
