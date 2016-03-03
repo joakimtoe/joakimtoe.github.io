@@ -248,14 +248,6 @@ function getAll() {
     log('Got bleService');
     bleService = service;
   })
-//  .then(() => bleService.getCharacteristic(pressureCharacteristicUUID))
-//  .then( characteristic => {
-//    setTimeout(handlePressure(characteristic), 10);
-//  })
-//  .then(() => bleService.getCharacteristic(humidityCharacteristicUUID))
-//  .then( characteristic => {
-//    setTimeout(handleHumidity(characteristic), 2000);
-//  })
   .then(() => bleService.getCharacteristic(demoCharacteristicUUID))
   .then( characteristic => {
     log('Got demoCharacteristic');
