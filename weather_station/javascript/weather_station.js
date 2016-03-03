@@ -15,7 +15,7 @@ var connectionParamCharacteristicUUID = 'ef680005-9b35-4933-9b10-52ffa9740042';
 /*  Weather Station Service
     temperatureCharacteristicUUID - notify/read - 2 bytes - uint8_t integer - uint8_t decimal
     pressureCharacteristicUUID - notify/read - 5 bytes - int32_t integer - uint8_t decimal
-    humidityCharacteristicUUID - notify/read - 1 byte - uint8_t 
+    humidityCharacteristicUUID - notify/read - 1 byte - uint8_t
     configurationCharacteristicUUID - write/write without response - 7 bytes - uint16_t temp interval in ms - uint16_t pressure interval in ms - uint16_t humidity interval in ms - uint8_t pressure mode (0=barometer, 1=altimeter)
 */
 var weatherStationServiceUUID = '20080001-e36f-4648-91c6-9e86ead38764';
@@ -68,7 +68,7 @@ window.onload = function(){
 function applyConfiguration(){
   log('> applyConfiguration()');
   log(weatherStationConfig);
-  
+
   let pInterval = parseFloat(document.getElementById("pressure-interval").value);
   log(pInterval);
   let tInterval = document.getElementById("temperature-interval").value;
@@ -76,7 +76,7 @@ function applyConfiguration(){
   let hInterval = document.getElementById("humidity-interval").value;
   log(hInterval);
   let pMode;
-  
+
   //  get the checked button toggle
   let temp = $("input[name='options']:checked").val();
   if(temp == 'barometer'){
@@ -85,7 +85,7 @@ function applyConfiguration(){
   else{
     pMode = 1;
   }
-  
+
   if (!navigator.bluetooth) {
     log('Web Bluetooth API is not available.\n' +
         'Please make sure the Web Bluetooth flag is enabled.');
@@ -120,7 +120,7 @@ function applyConfiguration(){
     data[4] = hInterval & 0xff;
     data[5] = (hInterval  >> 8) & 0xff;
     data[6] = pMode;
-    
+
     log('data: ' + data);
     for(let i = 0; i<7; i++){
       log(i + ': ' + data[i]);
@@ -188,7 +188,7 @@ function handleConfiguration(value){
   document.getElementById("pressure-interval").value = weatherStationConfig.pressureInterval;
   document.getElementById("humidity-interval").value = weatherStationConfig.humidityInterval;
   document.getElementById("temperature-interval").value = weatherStationConfig.temperatureInterval;
-  
+
   if(weatherStationConfig.pressureMode == 0){
     $('#pressure-barometer').toggleClass('active');
   }
@@ -206,7 +206,7 @@ function setConnecting(connecting) {
     isConnecting = connecting;
     if (connecting) {
         document.querySelector('#connect').style.display = "none";
-    } 
+    }
     else {
         document.querySelector('#connect').style.display = "float";
     }
@@ -217,7 +217,7 @@ function setConnected(connected) {
     if (connected) {
         document.querySelector('#connect').style.display = "none";
         document.querySelector('#disconnect').style.display = "float";
-    } 
+    }
     else {
         document.querySelector('#connect').style.display = "float";
         document.querySelector('#disconnect').style.display = "none";
@@ -238,7 +238,7 @@ function getAll() {
     ]
   })
   .then(device => device.connectGATT())
-  .then(server => { 
+  .then(server => {
     bleServer = server;
     log('Got bleServer');
     return server.getPrimaryService(weatherStationServiceUUID);
@@ -247,19 +247,24 @@ function getAll() {
     log('Got bleService');
     bleService = service;
   })
-  .then(() => bleService.getCharacteristic(pressureCharacteristicUUID))
-  .then( characteristic => {
-    setTimeout(handlePressure(characteristic), 10);
-  })
-  .then(() => bleService.getCharacteristic(humidityCharacteristicUUID))
-  .then( characteristic => {
-    setTimeout(handleHumidity(characteristic), 2000);
-  })
+//  .then(() => bleService.getCharacteristic(pressureCharacteristicUUID))
+//  .then( characteristic => {
+//    setTimeout(handlePressure(characteristic), 10);
+//  })
+//  .then(() => bleService.getCharacteristic(humidityCharacteristicUUID))
+//  .then( characteristic => {
+//    setTimeout(handleHumidity(characteristic), 2000);
+//  })
   .then(() => bleService.getCharacteristic(temperatureCharacteristicUUID))
   .then( characteristic => {
-    setTimeout(handleTemperature(characteristic), 5000);
+    log('Got temperatureCharacteristic');
+    temperatureChar = characteristic;
+    return temperatureChar.startNotifications();
   })
-  
+  .then(() => {
+    myCharacteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  })
+
   /** Works in Chrome OS not on Android
   .then(() => bleService.getCharacteristic(pressureCharacteristicUUID))
   .then( characteristic => {
@@ -300,13 +305,14 @@ function getAll() {
       .then(handleTemperature)
     ])
     **/
-    
+
   .then(startCloudLogging())
   .catch(error => {
     log('> getAll() ' + error);
   });
 }
-  
+
+/*
 function handlePressure(characteristic){
   log('> handlePressure()');
   pressureChar = characteristic;
@@ -326,11 +332,12 @@ function handleHumidity(characteristic){
   humidityChar = characteristic;
   characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
   return characteristic.startNotifications();
-}
+}*/
 
 
 function stopAll() {
   log('> stopAll()')
+  /*
   if (pressureChar) {
     pressureChar.stopNotifications().then(() => {
       pressureChar.removeEventListener('characteristicvaluechanged',handleNotifyPressure);
@@ -343,6 +350,7 @@ function stopAll() {
       log('> Humidity notifications stopped');
     });
   }
+  */
   if (temperatureChar) {
     temperatureChar.stopNotifications().then(() => {
       temperatureChar.removeEventListener('characteristicvaluechanged',handleNotifyTemperature);
@@ -361,6 +369,7 @@ function stopAll() {
   //  }
 }
 
+/*
 function handleNotifyHumidity(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
@@ -368,7 +377,7 @@ function handleNotifyHumidity(event) {
   humidityString = humidity_int.toString();
   log('Humidity is ' + humidity_int + '%');
   document.getElementById("humidity_reading").innerHTML = humidity_int +"%";
-}
+}*/
 
 function handleNotifyTemperature(event) {
   let value = event.target.value;
@@ -378,8 +387,21 @@ function handleNotifyTemperature(event) {
   temperatureString = temperature_int.toString() + '.' + temperature_dec.toString();
   log('Temperature is ' + temperature_int + '.' + temperature_dec + 'C');
   document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + '&deg;C';
+
+  let pressure_pascal = value.getInt32(2, true);
+  let pressure_kpascal = pressure_pascal / 1000;
+  let pressure_decimal = value.getUint8(6);
+  pressureString = pressure_kpascal.toString();
+  log('Pressure is ' + pressure_pascal + 'Pa');
+  document.getElementById("pressure_reading").innerHTML = pressure_pascal + 'Pa';
+
+  let humidity_int = value.getUint8(7);
+  humidityString = humidity_int.toString();
+  log('Humidity is ' + humidity_int + '%');
+  document.getElementById("humidity_reading").innerHTML = humidity_int +"%";
 }
 
+/*
 function handleNotifyPressure(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
@@ -390,6 +412,7 @@ function handleNotifyPressure(event) {
   log('Pressure is ' + pressure_pascal + 'Pa');
   document.getElementById("pressure_reading").innerHTML = pressure_pascal + 'Pa';
 }
+*/
 
 // Swap byte order of 32bit value
 function swap32(val) {
