@@ -23,7 +23,7 @@ var weatherStationServiceUUID = '20080001-e36f-4648-91c6-9e86ead38764';
 //var pressureCharacteristicUUID = '20080003-e36f-4648-91c6-9e86ead38764';
 //var humidityCharacteristicUUID = '20080004-e36f-4648-91c6-9e86ead38764';
 //var configurationCharacteristicUUID = '20080005-e36f-4648-91c6-9e86ead38764';
-var demoCharacteristicUUID = '20080006-e36f-4648-91c6-9e86ead38764';
+var demoCharacteristicUUID = '20080002-e36f-4648-91c6-9e86ead38764';
 
 /*  User Interface Service
     ledCharacteristicUUID - write/read - 4 bytes - uint32_t - LED ID - Red - Green - Blue (LSB)
