@@ -19,11 +19,11 @@ var connectionParamCharacteristicUUID = 'ef680005-9b35-4933-9b10-52ffa9740042';
     configurationCharacteristicUUID - write/write without response - 7 bytes - uint16_t temp interval in ms - uint16_t pressure interval in ms - uint16_t humidity interval in ms - uint8_t pressure mode (0=barometer, 1=altimeter)
 */
 var weatherStationServiceUUID = '20080001-e36f-4648-91c6-9e86ead38764';
-var temperatureCharacteristicUUID = '20080002-e36f-4648-91c6-9e86ead38764';
-var pressureCharacteristicUUID = '20080003-e36f-4648-91c6-9e86ead38764';
-var humidityCharacteristicUUID = '20080004-e36f-4648-91c6-9e86ead38764';
-var configurationCharacteristicUUID = '20080005-e36f-4648-91c6-9e86ead38764';
-var demoCharacteristicUUID = '20080006-e36f-4648-91c6-9e86ead38764';
+//var temperatureCharacteristicUUID = '20080002-e36f-4648-91c6-9e86ead38764';
+//var pressureCharacteristicUUID = '20080003-e36f-4648-91c6-9e86ead38764';
+//var humidityCharacteristicUUID = '20080004-e36f-4648-91c6-9e86ead38764';
+//var configurationCharacteristicUUID = '20080005-e36f-4648-91c6-9e86ead38764';
+var demoCharacteristicUUID = '20080002-e36f-4648-91c6-9e86ead38764';
 
 /*  User Interface Service
     ledCharacteristicUUID - write/read - 4 bytes - uint32_t - LED ID - Red - Green - Blue (LSB)
@@ -57,7 +57,7 @@ var temperatureChar;
 var pressureString;
 var humidityString;
 var temperatureString;
-var myCharacteristic;
+//var myCharacteristic;
 
 window.onload = function(){
   document.querySelector('#connect').addEventListener('click', getAll);
@@ -247,12 +247,12 @@ function getAll() {
   .then(service => {
     log('Got bleService');
     bleService = service;
+    return service.getCharacteristic(demoCharacteristicUUID)
   })
-  .then(() => bleService.getCharacteristic(demoCharacteristicUUID))
   .then( characteristic => {
     log('Got demoCharacteristic');
     temperatureChar = characteristic;
-    return temperatureChar.startNotifications();
+    return characteristic.startNotifications();
   })
   .then(() => {
     temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
