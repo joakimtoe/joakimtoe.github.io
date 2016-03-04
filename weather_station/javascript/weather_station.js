@@ -381,12 +381,12 @@ function handleNotifyTemperature(event) {
   log('Temperature is ' + temperature_int + '.' + temperature_dec + 'C');
   document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + '&deg;C';
 
-  let pressure_pascal = value.getInt32(2, true);
-  let pressure_kpascal = pressure_pascal / 1000;
+  let pressure_integer = value.getInt32(2, true);
   let pressure_decimal = value.getUint8(6);
-  pressureString = pressure_kpascal.toString();
-  log('Pressure is ' + pressure_pascal + 'Pa');
-  document.getElementById("pressure_reading").innerHTML = pressure_pascal + 'Pa';
+  let pressure_hpascal = pressure_integer / 100 + pressure_decimal / 1000;
+  pressureString = pressure_hpascal.toString();
+  log('Pressure is ' + pressure_hpascal + 'hPa');
+  document.getElementById("pressure_reading").innerHTML = pressure_hpascal + 'hPa';
 
   let humidity_int = value.getUint8(7);
   humidityString = humidity_int.toString();
