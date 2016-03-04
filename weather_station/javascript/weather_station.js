@@ -383,10 +383,11 @@ function handleNotifyTemperature(event) {
 
   let pressure_integer = value.getInt32(2, true);
   let pressure_decimal = value.getUint8(6);
-  let pressure_hpascal = pressure_integer / 100 + pressure_decimal / 1000;
+  let pressure_pascal = pressure_integer + pressure_decimal / 1000;
+  let pressure_hpascal = pressure_pascal / 100;
   pressureString = pressure_hpascal.toString();
   log('Pressure is ' + pressure_hpascal + 'hPa');
-  document.getElementById("pressure_reading").innerHTML = pressure_hpascal + 'hPa';
+  document.getElementById("pressure_reading").innerHTML = pressure_hpascal.toFixed(3) + 'hPa';
 
   let humidity_int = value.getUint8(7);
   humidityString = humidity_int.toString();
