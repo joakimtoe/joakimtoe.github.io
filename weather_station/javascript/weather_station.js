@@ -148,6 +148,7 @@ function loadConfiguration(){
     return;
   }
   log('Requesting Bluetooth Device...');
+  /*
   navigator.bluetooth.requestDevice({filters: [{services: [configurationServiceUUID]}]})
   .then(device => {
     log(device);
@@ -156,11 +157,12 @@ function loadConfiguration(){
   .then(server => {
     log(server);
     return server.getPrimaryService(weatherStationServiceUUID);
-  })
+})
   .then(service => {
     log(service);
-    return service.getCharacteristic(configurationCharacteristicUUID);
-  })
+    */
+    bleService.getCharacteristic(configurationCharacteristicUUID)
+//  })
   .then(characteristic => {
     log(characteristic);
     return characteristic.readValue();
