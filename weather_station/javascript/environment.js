@@ -111,11 +111,11 @@ function stopAll() {
 function handleNotifyGas(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
-  let eco2_ppm = value.getUint16(0);
+  let eco2_ppm = (value.getUint8(1) << 8) + value.getUint8(0) ;
   log('eCO2 is ' + eco2_ppm + 'ppm');
   document.getElementById("eco2_reading").innerHTML = eco2_ppm + 'ppm';
 
-  let tvoc_ppb = value.getUint16(1);
+  let tvoc_ppb = (value.getUint8(3) << 8) + value.getUint8(2);
   log('TVOC is ' + tvoc_ppb + 'ppb');
-  document.getElementById("tvoc_reading").innerHTML = tvoc_ppm + 'ppb';
+  document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + 'ppb';
 }
