@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Environment</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="sticky-footer-navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="javascript/environment.js"></script>
+  </head>
+  <body>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img src="images/nordic_icon_50h.png" class="navbar-brand">
+
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Live Demos
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="weather_station.html">Weather Station</a></li>
+            <li><a href="environment.html">Environment</a></li>
+          </ul>
+        </li>
+        <li><a href="#">About</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-wrench"></span> Report a bug</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="container">
+      <div class="page-header text-muted">
+        <h1>Environment</h1>
+        <div class="btn-group">
+          <button type="button" class="btn btn-info" id="connect"><span class="glyphicon glyphicon-flash"></span> CONNECT</button>
+          <button type="button" class="btn btn-info" id="disconnect"><span class="glyphicon glyphicon-remove-circle"></span> DISCONNECT</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading-small">
+              <span class="glyphicon glyphicon-tree-deciduous gi-2x panel-icon-color pull-right"></span>
+              <h3 class="panel-title text-1-25x">eCO2</h3>
+            </div>
+            <div class="panel-body-small text-center text-3x" id="eco2_reading">
+              0ppm
+            </div>
+            <div class="panel-footer-small">.
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading-small">
+              <span class="glyphicon glyphicon-tree-conifer gi-2x panel-icon-color pull-right"></span>
+              <h3 class="panel-title text-1-25x">TVOC</h3>
+            </div>
+            <div class="panel-body-small text-center text-3x" id="tvoc_reading">
+              ppb
+            </div>
+            <div class="panel-footer-small">.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug output -->
+    <div class="container">
+      <pre id="log"></pre>
+    </div>
+
+    <!-- Report a bug Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Report a bug</h4>
+          </div>
+          <div class="modal-body">
+            <p>Provide a link to a Google Form (simple) or create custom form (time consuming).</p>
+            <div style="font-size: 25px">
+              <p ><i class="zmdi zmdi-rotate-right zmdi-hc-spin secondary-light-blue"></i> Connecting...</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configure Modal -->
+    <div id="configureModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Configure Weather Station</h4>
+          </div>
+          <div class="modal-body">
+            <label for="interval-group">Notification intervals</label>
+            <div class="input-group" id="interval-group">
+              <span class="input-group-addon">Temperature</span>
+              <input type="text" class="form-control" id="temperature-interval" placeholder="1000" aria-label="1000">
+              <span class="input-group-addon">ms</span>
+            </div>
+            <form>
+              <div class="input-group">
+                <span class="input-group-addon">Humidity</span>
+                <input type="text" class="form-control" id="humidity-interval" placeholder="1000" aria-label="1000">
+                <span class="input-group-addon">ms</span>
+              </div>
+              <div class="input-group">
+                <span class="input-group-addon">Pressure</span>
+                <input type="text" class="form-control" id="pressure-interval" placeholder="1000" aria-label="1000">
+                <span class="input-group-addon">ms</span>
+              </div>
+              <label for="pressure-toggle">Pressure sensor mode</label>
+              <div class="btn-group" id="pressure-toggle" data-toggle="buttons">
+                <label class="btn btn-default" id="pressure-barometer">
+                  <input type="radio" name="options" value="barometer" autocomplete="off"> Barometer [Pa]
+                </label>
+                <label class="btn btn-default" id="pressure-altimeter">
+                  <input type="radio" name="options" value="altimeter" autocomplete="off"> Altimeter [m]
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="load-configuration">Load</button>
+            <button type="button" class="btn btn-default" id="apply-configuration">Apply</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Nordic Semiconductor © 2016<i class="zmdi zmdi-github-alt zmdi-hc-2x pull-right"></i></p>
+      </div>
+    </footer>
+  </body>
+</html>
