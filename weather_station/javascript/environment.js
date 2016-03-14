@@ -94,12 +94,17 @@ function stopAll() {
   }
   // Disconnect only for Chrome OS 50+
   log('Disconnecting from Bluetooth Device...');
-  if (bleServer) {
-    if (bleServer.connected) {
-      bleServer.disconnect();
-      log('Bluetooth Device connected: ' + bleServer.connected);
-    } else {
-      log('Bluetooth Device is already disconnected');
+  if (bleServer)
+  {
+        if (bleServer.connected)
+        {
+          bleServer.disconnect();
+          log('Bluetooth Device connected: ' + bleServer.connected);
+        }
+        else
+        {
+          log('Bluetooth Device is already disconnected');
+        }
     }
 }
 
