@@ -72,12 +72,12 @@ function getAll() {
     return service.getCharacteristic(gasCharacteristicUUID)
   })
   .then( characteristic => {
-    log('Got demoCharacteristic');
+    log('Got gasCharacteristic');
     gasChar = characteristic;
     return characteristic.startNotifications();
   })
   .then(() => {
-    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+    gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
   })
   .catch(error => {
     log('> getAll() ' + error);
