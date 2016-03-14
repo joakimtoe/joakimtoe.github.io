@@ -77,7 +77,7 @@ function getAll() {
     return characteristic.startNotifications();
   })
   .then(() => {
-    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyGas;
+    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
   })
   .catch(error => {
     log('> getAll() ' + error);
