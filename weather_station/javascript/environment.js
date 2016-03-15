@@ -99,8 +99,8 @@ function handlePressure(characteristic){
 function handleTemperature(characteristic){
   log('> handleTemperature()');
   temperatureChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
-  //return characteristic.startNotifications();
+  temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  return temperatureChar.startNotifications();
 }
 
 function handleHumidity(characteristic){
@@ -113,8 +113,8 @@ function handleHumidity(characteristic){
 function handleGas(characteristic){
   log('> handleGas()');
   gasChar = characteristic;
-  characteristic.addEventListener('characteristicvaluechanged',handleNotifyGas);
-  return characteristic.startNotifications();
+  gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+  return gasChar.startNotifications();
 }
 
 function stopAll() {
