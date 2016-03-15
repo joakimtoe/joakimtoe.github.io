@@ -120,10 +120,10 @@ function handleGas(characteristic){
 function stopAll() {
     log('> stopAll()')
     gasChar.stopNotifications().then(() => {
-      log('> Gas notifications stopped');
+      log('> Gas notification stopped');
     })
-    .then(() => {
-        gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
+    gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas).then(() => {
+      log('> Gas notification handler removed');
     })
     .then(() => {
         // Disconnect only for Chrome OS 50+
@@ -136,7 +136,7 @@ function stopAll() {
         else
         {
           log('Bluetooth Device is already disconnected');
-        }        
+        }
     })
 }
 
