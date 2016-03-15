@@ -85,26 +85,21 @@ function getAll() {
 }
 
 function stopAll() {
-  log('> stopAll()')
-  if (gasChar) {
-    temperatureChar.stopNotifications().then(() => {
-      temperatureChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
-      log('> Temperature notifications stopped');
+    log('> stopAll()')
+    gasChar.stopNotifications().then(() => {
+      gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
+      log('> Gas notifications stopped');
     });
-  }
-  // Disconnect only for Chrome OS 50+
-  log('Disconnecting from Bluetooth Device...');
-  if (bleServer)
-  {
-        if (bleServer.connected)
-        {
-          bleServer.disconnect();
-          log('Bluetooth Device connected: ' + bleServer.connected);
-        }
-        else
-        {
-          log('Bluetooth Device is already disconnected');
-        }
+    // Disconnect only for Chrome OS 50+
+    log('Disconnecting from Bluetooth Device...');
+    if (bleServer.connected)
+    {
+      bleServer.disconnect();
+      log('Bluetooth Device connected: ' + bleServer.connected);
+    }
+    else
+    {
+      log('Bluetooth Device is already disconnected');
     }
 }
 
