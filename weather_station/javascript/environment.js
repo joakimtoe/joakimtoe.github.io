@@ -66,6 +66,7 @@ function getAll() {
     log('Got bleServer');
     return server.getPrimaryService(weatherStationServiceUUID);
   })
+  // Gas / Air quality
   .then(service => {
     log('Got bleService');
     bleService = service;
@@ -79,6 +80,18 @@ function getAll() {
   .then(() => {
     gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
   })
+  // Temperature
+  .then(() => {
+    return bleService.getCharacteristic(temperatureCharacteristicUUID)
+  })
+  .then( characteristic => {
+    log('Got gasCharacteristic');
+    temperatureChar = characteristic;
+    return characteristic.startNotifications();
+  })
+  .then(() => {
+    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemp);
+  })
   .catch(error => {
     log('> getAll() ' + error);
   });
@@ -86,10 +99,10 @@ function getAll() {
 
 function stopAll() {
     log('> stopAll()')
-    gasChar.stopNotifications().then(() => {
-      gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
-      log('> Gas notifications stopped');
-    });
+    //gasChar.stopNotifications().then(() => {
+    //  gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
+    //  log('> Gas notifications stopped');
+    //});
     // Disconnect only for Chrome OS 50+
     log('Disconnecting from Bluetooth Device...');
     if (bleServer.connected)
@@ -113,4 +126,14 @@ function handleNotifyGas(event) {
   let tvoc_ppb = (value.getUint8(3) << 8) + value.getUint8(2);
   //log('TVOC is ' + tvoc_ppb + 'ppb');
   document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + 'ppb';
+}
+
+function handleNotifyTemp(event) {
+  let value = event.target.value;
+  value = value.buffer ? value : new DataView(value);
+  let temperature_int = value.getUint8(0);
+  let temperature_dec = value.getUint8(1);
+  temperatureString = temperature_int.toString() + '.' + temperature_dec.toString();
+  log('Temperature is ' + temperature_int + '.' + temperature_dec + 'C');
+  //document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + '&deg;C';
 }
