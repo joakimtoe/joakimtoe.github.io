@@ -81,7 +81,7 @@ function getAll() {
       service.getCharacteristic(humidityCharacteristicUUID)
       .then(handleHumidity),
       service.getCharacteristic(pressureCharacteristicUUID)
-      .then(handlePressure)
+      .then(handlePressure),
       service.getCharacteristic(gasCharacteristicUUID)
       .then(handleGas)
     ])
