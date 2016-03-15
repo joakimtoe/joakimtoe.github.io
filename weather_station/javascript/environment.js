@@ -92,22 +92,22 @@ function getAll() {
 function handlePressure(characteristic){
   log('> handlePressure()');
   pressureChar = characteristic;
-  characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
-  return characteristic.startNotifications();
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
+  //return characteristic.startNotifications();
 }
 
 function handleTemperature(characteristic){
   log('> handleTemperature()');
   temperatureChar = characteristic;
-  characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
-  return characteristic.startNotifications();
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  //return characteristic.startNotifications();
 }
 
 function handleHumidity(characteristic){
   log('> handleHumidity()');
   humidityChar = characteristic;
-  characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
-  return characteristic.startNotifications();
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
+  //return characteristic.startNotifications();
 }
 
 function handleGas(characteristic){
