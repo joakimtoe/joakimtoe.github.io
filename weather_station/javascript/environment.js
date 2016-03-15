@@ -37,6 +37,7 @@ var bleDevice;
 var bleServer;
 var bleService;
 var gasChar;
+var temperatureChar;
 
 window.onload = function(){
   document.querySelector('#connect').addEventListener('click', getAll);
