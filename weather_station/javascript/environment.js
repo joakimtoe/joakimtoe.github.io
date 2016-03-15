@@ -119,10 +119,10 @@ function handleGas(characteristic){
 
 function stopAll() {
     log('> stopAll()')
-    //gasChar.stopNotifications().then(() => {
-    //  gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
-    //  log('> Gas notifications stopped');
-    //});
+    gasChar.stopNotifications().then(() => {
+      gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
+      log('> Gas notifications stopped');
+    });
     // Disconnect only for Chrome OS 50+
     log('Disconnecting from Bluetooth Device...');
     if (bleServer.connected)
