@@ -70,11 +70,9 @@ function getAll() {
     log('Got bleServer');
     return server.getPrimaryService(weatherStationServiceUUID);
   })
-  // Gas / Air quality
   .then(service => {
     log('Got bleService');
     bleService = service;
-    //return service.getCharacteristic(gasCharacteristicUUID)
     return Promise.all([
       service.getCharacteristic(temperatureCharacteristicUUID)
       .then(handleTemperature),
@@ -86,14 +84,6 @@ function getAll() {
       .then(handleGas)
     ])
   })
-//  .then( characteristic => {
-//    log('Got gasCharacteristic');
-//    gasChar = characteristic;
-//    return characteristic.startNotifications();
-//  })
-//  .then(() => {
-//    gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
-//  })
   .catch(error => {
     log('> getAll() ' + error);
   });
@@ -102,22 +92,22 @@ function getAll() {
 function handlePressure(characteristic){
   log('> handlePressure()');
   pressureChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
-  //return characteristic.startNotifications();
+  characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
+  return characteristic.startNotifications();
 }
 
 function handleTemperature(characteristic){
   log('> handleTemperature()');
   temperatureChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
-  //return characteristic.startNotifications();
+  characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  return characteristic.startNotifications();
 }
 
 function handleHumidity(characteristic){
   log('> handleHumidity()');
   humidityChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
-  //return characteristic.startNotifications();
+  characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
+  return characteristic.startNotifications();
 }
 
 function handleGas(characteristic){
@@ -158,12 +148,30 @@ function handleNotifyGas(event) {
   document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + 'ppb';
 }
 
-function handleNotifyTemp(event) {
+function handleNotifyTemperature(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
   let temperature_int = value.getUint8(0);
   let temperature_dec = value.getUint8(1);
-  temperatureString = temperature_int.toString() + '.' + temperature_dec.toString();
   log('Temperature is ' + temperature_int + '.' + temperature_dec + 'C');
   //document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + '&deg;C';
+}
+
+function handleNotifyHumidity(event) {
+  let value = event.target.value;
+  value = value.buffer ? value : new DataView(value);
+  let humidity_int = value.getUint8(0);
+  log('Humidity is ' + humidity_int + '%');
+  //document.getElementById("humidity_reading").innerHTML = humidity_int +"%";
+}
+
+function handleNotifyPressure(event) {
+  let value = event.target.value;
+  value = value.buffer ? value : new DataView(value);
+  let pressure_integer = value.getInt32(0, true);
+  let pressure_decimal = value.getUint8(4);
+  let pressure_pascal = pressure_integer + pressure_decimal / 1000;
+  let pressure_hpascal = pressure_pascal / 100;
+  log('Pressure is ' + pressure_hpascal + 'hPa');
+  //document.getElementById("pressure_reading").innerHTML = pressure_hpascal.toFixed(3) + 'hPa';
 }
