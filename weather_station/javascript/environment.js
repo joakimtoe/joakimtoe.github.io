@@ -39,6 +39,8 @@ var bleService;
 var tempBleService;
 var gasChar;
 var temperatureChar;
+var pressureChar;
+var humidityChar;
 
 window.onload = function(){
   document.querySelector('#connect').addEventListener('click', getAll);
@@ -72,36 +74,57 @@ function getAll() {
   .then(service => {
     log('Got bleService');
     bleService = service;
-    return service.getCharacteristic(gasCharacteristicUUID)
+    //return service.getCharacteristic(gasCharacteristicUUID)
+    return Promise.all([
+      service.getCharacteristic(temperatureCharacteristicUUID)
+      .then(handleTemperature),
+      service.getCharacteristic(humidityCharacteristicUUID)
+      .then(handleHumidity),
+      service.getCharacteristic(pressureCharacteristicUUID)
+      .then(handlePressure)
+      service.getCharacteristic(gasCharacteristicUUID)
+      .then(handleGas)
+    ])
   })
-  .then( characteristic => {
-    log('Got gasCharacteristic');
-    gasChar = characteristic;
-    return characteristic.startNotifications();
-  })
-  .then(() => {
-    gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
-  })
-  // Temperature
-  .then(() => {
-      return bleServer.getPrimaryService(weatherStationServiceUUID);
-  })
-  .then(service => {
-      log('Got tempBleService');
-      tempBleService = service;
-      return service.getCharacteristic(temperatureCharacteristicUUID)
-  })
-  .then( characteristic => {
-    log('Got tempCharacteristic');
-    temperatureChar = characteristic;
-    return characteristic.startNotifications();
-  })
-  .then(() => {
-    temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemp);
-  })
+//  .then( characteristic => {
+//    log('Got gasCharacteristic');
+//    gasChar = characteristic;
+//    return characteristic.startNotifications();
+//  })
+//  .then(() => {
+//    gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+//  })
   .catch(error => {
     log('> getAll() ' + error);
   });
+}
+
+function handlePressure(characteristic){
+  log('> handlePressure()');
+  pressureChar = characteristic;
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
+  //return characteristic.startNotifications();
+}
+
+function handleTemperature(characteristic){
+  log('> handleTemperature()');
+  temperatureChar = characteristic;
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  //return characteristic.startNotifications();
+}
+
+function handleHumidity(characteristic){
+  log('> handleHumidity()');
+  humidityChar = characteristic;
+  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
+  //return characteristic.startNotifications();
+}
+
+function handleGas(characteristic){
+  log('> handleGas()');
+  gasChar = characteristic;
+  characteristic.addEventListener('characteristicvaluechanged',handleNotifyGas);
+  return characteristic.startNotifications();
 }
 
 function stopAll() {
