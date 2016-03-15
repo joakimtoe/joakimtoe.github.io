@@ -36,6 +36,7 @@ var buttonCharacteristicUUID = 'C7AE0003-3266-4A5C-859F-0F4799146BB5';
 var bleDevice;
 var bleServer;
 var bleService;
+var tempBleService;
 var gasChar;
 var temperatureChar;
 
@@ -83,10 +84,15 @@ function getAll() {
   })
   // Temperature
   .then(() => {
-    return bleService.getCharacteristic(temperatureCharacteristicUUID)
+      return bleServer.getPrimaryService(weatherStationServiceUUID);
+  })
+  .then(service => {
+      log('Got tempBleService');
+      tempBleService = service;
+      return service.getCharacteristic(temperatureCharacteristicUUID)
   })
   .then( characteristic => {
-    log('Got gasCharacteristic');
+    log('Got tempCharacteristic');
     temperatureChar = characteristic;
     return characteristic.startNotifications();
   })
