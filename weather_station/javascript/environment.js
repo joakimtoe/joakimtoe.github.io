@@ -120,31 +120,35 @@ function handleGas(characteristic){
 function stopAll() {
     log('> stopAll()')
     gasChar.stopNotifications().then(() => {
-      gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
       log('> Gas notifications stopped');
-    });
-    // Disconnect only for Chrome OS 50+
-    log('Disconnecting from Bluetooth Device...');
-    if (bleServer.connected)
-    {
-      bleServer.disconnect();
-      log('Bluetooth Device connected: ' + bleServer.connected);
-    }
-    else
-    {
-      log('Bluetooth Device is already disconnected');
-    }
+    })
+    .then(() => {
+        gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
+    })
+    .then(() => {
+        // Disconnect only for Chrome OS 50+
+        log('Disconnecting from Bluetooth Device...');
+        if (bleServer.connected)
+        {
+          bleServer.disconnect();
+          log('Bluetooth Device connected: ' + bleServer.connected);
+        }
+        else
+        {
+          log('Bluetooth Device is already disconnected');
+        }        
+    })
 }
 
 function handleNotifyGas(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
   let eco2_ppm = (value.getUint8(1) << 8) + value.getUint8(0) ;
-  //log('eCO2 is ' + eco2_ppm + 'ppm');
+  log('eCO2 is ' + eco2_ppm + 'ppm');
   document.getElementById("eco2_reading").innerHTML = eco2_ppm + 'ppm';
 
   let tvoc_ppb = (value.getUint8(3) << 8) + value.getUint8(2);
-  //log('TVOC is ' + tvoc_ppb + 'ppb');
+  log('TVOC is ' + tvoc_ppb + 'ppb');
   document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + 'ppb';
 }
 
