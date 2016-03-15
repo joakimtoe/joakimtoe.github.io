@@ -125,19 +125,20 @@ function stopAll() {
     gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas).then(() => {
       log('> Gas notification handler removed');
     })
-    .then(() => {
-        // Disconnect only for Chrome OS 50+
-        log('Disconnecting from Bluetooth Device...');
-        if (bleServer.connected)
-        {
-          bleServer.disconnect();
-          log('Bluetooth Device connected: ' + bleServer.connected);
-        }
-        else
-        {
-          log('Bluetooth Device is already disconnected');
-        }
-    })
+    // Disconnect only for Chrome OS 50+
+    log('Disconnecting from Bluetooth Device...');
+    if (bleServer.connected)
+    {
+      bleServer.disconnect();
+      log('Bluetooth Device connected: ' + bleServer.connected);
+    }
+    else
+    {
+      log('Bluetooth Device is already disconnected');
+    }
+    .catch(error => {
+      log('> stopAll() ' + error);
+    });
 }
 
 function handleNotifyGas(event) {
