@@ -23,7 +23,8 @@ var temperatureCharacteristicUUID = '20080002-e36f-4648-91c6-9e86ead38764';
 var pressureCharacteristicUUID = '20080003-e36f-4648-91c6-9e86ead38764';
 var humidityCharacteristicUUID = '20080004-e36f-4648-91c6-9e86ead38764';
 var gasCharacteristicUUID = '20080005-e36f-4648-91c6-9e86ead38764';
-var configurationCharacteristicUUID = '20080006-e36f-4648-91c6-9e86ead38764';
+var colorCharacteristicUUID = '20080006-e36f-4648-91c6-9e86ead38764';
+var configurationCharacteristicUUID = '20080007-e36f-4648-91c6-9e86ead38764';
 
 /*  User Interface Service
     ledCharacteristicUUID - write/read - 4 bytes - uint32_t - LED ID - Red - Green - Blue (LSB)
@@ -41,6 +42,7 @@ var gasChar;
 var temperatureChar;
 var pressureChar;
 var humidityChar;
+var colorChar;
 
 window.onload = function(){
   document.querySelector('#connect').addEventListener('click', getAll);
@@ -81,7 +83,9 @@ function getAll() {
       service.getCharacteristic(pressureCharacteristicUUID)
       .then(handlePressure),
       service.getCharacteristic(gasCharacteristicUUID)
-      .then(handleGas)
+      .then(handleGas),
+      service.getCharacteristic(colorCharacteristicUUID)
+      .then(handleColor)      
     ])
   })
   .catch(error => {
@@ -113,8 +117,15 @@ function handleHumidity(characteristic){
 function handleGas(characteristic){
   log('> handleGas()');
   gasChar = characteristic;
-  gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
-  return gasChar.startNotifications();
+  //gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+  //return gasChar.startNotifications();
+}
+
+function handleColor(characteristic){
+  log('> handleColor()');
+  colorChar = characteristic;
+  colorChar.addEventListener('characteristicvaluechanged',handleNotifyColor);
+  return colorChar.startNotifications();
 }
 
 function stopAll() {
@@ -142,6 +153,32 @@ function disconnect() {
     {
       log('Bluetooth Device is already disconnected');
     }
+}
+
+function handleNotifyColor(event) {
+  let value = event.target.value;
+  value = value.buffer ? value : new DataView(value);
+  
+  let red = (value.getUint8(1) << 8) + value.getUint8(0) ;
+  log('red is ' + red);
+  
+  let green = (value.getUint8(3) << 8) + value.getUint8(2) ;
+  log('green is ' + green);
+  
+  let blue = (value.getUint8(5) << 8) + value.getUint8(4) ;
+  log('blue is ' + blue);
+  
+  let clear = (value.getUint8(7) << 8) + value.getUint8(6) ;
+  log('clear is ' + clear);
+  
+  let red_8   = (red / 65536.0) * 256
+  let green_8 = (green / 65536.0) * 256
+  let blue_8  = (blue / 65536.0) * 256
+  
+  let rbg_str = '#' + red_8.toString(16) + green_8.toString(16) + blue_8.toString(16); 
+  log(rbg_str);
+  document.getElementById("rgbc_reading").style.color = rbg_str;
+
 }
 
 function handleNotifyGas(event) {
