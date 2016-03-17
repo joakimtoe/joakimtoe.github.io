@@ -160,20 +160,17 @@ function handleNotifyColor(event) {
   value = value.buffer ? value : new DataView(value);
   
   let red = (value.getUint8(1) << 8) + value.getUint8(0) ;
-  log('red is ' + red);
   
   let green = (value.getUint8(3) << 8) + value.getUint8(2) ;
-  log('green is ' + green);
   
   let blue = (value.getUint8(5) << 8) + value.getUint8(4) ;
-  log('blue is ' + blue);
   
   let clear = (value.getUint8(7) << 8) + value.getUint8(6) ;
-  log('clear is ' + clear);
+  //log('' + clear);
   
-  let red_8   = (red / 65536.0) * 256
-  let green_8 = (green / 65536.0) * 256
-  let blue_8  = (blue / 65536.0) * 256
+  let red_8   = (red / 65536.0) * 256;
+  let green_8 = (green / 65536.0) * 256;
+  let blue_8  = (blue / 65536.0) * 256;
   
   let rbg_str = '#' + red_8.toString(16) + green_8.toString(16) + blue_8.toString(16); 
   log(rbg_str);
