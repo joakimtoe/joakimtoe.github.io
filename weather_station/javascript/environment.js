@@ -169,9 +169,9 @@ function handleNotifyColor(event) {
   //log('clear: ' + clear);
 
   let clear_8  = (clear >> 8);
-  let red_8   = (red*clear_8 >> 8);
-  let green_8 = (green*clear_8 >> 8);
-  let blue_8  = (blue*clear_8 >> 8);
+  let red_8   = (red*clear >> 8);
+  let green_8 = (green*clear >> 8);
+  let blue_8  = (blue*clear >> 8);
   let rgb     = (red_8 << 16) + (green_8 << 8) + (blue_8);
   let rgb_str = '#' + rgb.toString(16)
   log('r ' + red_8 + ' - g ' + green_8 + ' - b ' + blue_8 + ' - rbg ' + rgb_str);
