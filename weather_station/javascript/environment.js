@@ -167,14 +167,14 @@ function handleNotifyColor(event) {
   //log('blue: ' + blue);
   let c = (value.getUint8(7) << 8) + value.getUint8(6) ;
   //log('clear: ' + clear);
-  
+
   let r_ratio = r / (r+g+b)
   let g_ratio = g / (r+g+b)
   let b_ratio = b / (r+g+b)
-  
-  let r_8 = r_ratio * 256.0
-  let g_8 = g_ratio * 256.0
-  let b_8 = b_ratio * 256.0
+
+  let r_8 = r_ratio * 256.0*3
+  let g_8 = g_ratio * 256.0*3
+  let b_8 = b_ratio * 256.0*3
   let rgb_str = "rgb("+r_8.toFixed(0)+","+g_8.toFixed(0)+","+b_8.toFixed(0)+")";
   log('r ' + r_8 + ' - g ' + g_8 + ' - b ' + b_8 + ' - ' + rgb_str);
 
