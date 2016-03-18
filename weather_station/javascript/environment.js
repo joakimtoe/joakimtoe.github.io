@@ -134,6 +134,11 @@ function stopAll() {
         log('> Gas notification stopped');
         gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas)
         log('> Gas notification handler removed');
+    });
+    colorChar.stopNotifications().then(() => {
+        log('> Gas notification stopped');
+        colorChar.removeEventListener('characteristicvaluechanged',handleNotifyColor)
+        log('> Gas notification handler removed');
     })
     .then(disconnect)
     .catch(error => {
