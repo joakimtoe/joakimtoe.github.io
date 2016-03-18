@@ -168,20 +168,14 @@ function handleNotifyColor(event) {
   let clear = (value.getUint8(7) << 8) + value.getUint8(6) ;
   //log('clear: ' + clear);
 
-  let clear_8  = (clear / 65536) * 256;
-  let red_8   = (red*clear_8 / 65536) * 256;
-  let green_8 = (green*clear_8 / 65536) * 256;
-  let blue_8  = (blue*clear_8 / 65536) * 256;
+  let clear_8  = (clear >> 8);
+  let red_8   = (red >> 8);
+  let green_8 = (green >> 8);
+  let blue_8  = (blue >> 8);
+  let rgb     = (red_8 << 16) + (green_8 << 8) + (blue_8);
 
-  let red_int   = red_8.round();
-  let green_int = green_8.round();
-  let blue_int  = blue_8.round();
-
-  log('r ' + red_8 + ' - g ' + green_8 + ' - b ' + blue_8);
-  log('r ' + red_int + ' - g ' + green_int + ' - b ' + blue_int);
-  let rgb_str = '#' + red_int.toString(16) + green_int.toString(16) + blue_int.toString(16);
-  log('rgb_str: ' + rgb_str);
-  document.getElementById("rgbc_reading").style.color = rgb_str;
+  log('r ' + red_8 + ' - g ' + green_8 + ' - b ' + blue_8 + ' - rbg ' + rgb.toString(16));
+  document.getElementById("rgbc_reading").style.color = ('#' + rgb.toString(16));
 
 }
 
