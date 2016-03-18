@@ -55,7 +55,6 @@ function log(text) {
 }
 
 function getAll() {
-  document.getElementById("rgbc_reading").style.color = rgb_str;  
   if (!navigator.bluetooth) {
       log('Web Bluetooth API is not available.\n' +
           'Please make sure the Web Bluetooth flag is enabled.');
