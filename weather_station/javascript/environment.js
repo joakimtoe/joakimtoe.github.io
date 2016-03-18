@@ -55,6 +55,7 @@ function log(text) {
 }
 
 function getAll() {
+    document.getElementById("rgbc_reading").style.color = '#FF00FF';
   if (!navigator.bluetooth) {
       log('Web Bluetooth API is not available.\n' +
           'Please make sure the Web Bluetooth flag is enabled.');
@@ -169,14 +170,14 @@ function handleNotifyColor(event) {
   //log('clear: ' + clear);
 
   let clear_8  = (clear >> 8);
-  let red_8   = (red*clear >> 8);
-  let green_8 = (green*clear >> 8);
-  let blue_8  = (blue*clear >> 8);
+  let red_8   = (red >> 8);
+  let green_8 = (green >> 8);
+  let blue_8  = (blue >> 8);
   let rgb     = (red_8 << 16) + (green_8 << 8) + (blue_8);
   let rgb_str = '#' + rgb.toString(16)
   log('r ' + red_8 + ' - g ' + green_8 + ' - b ' + blue_8 + ' - rbg ' + rgb_str);
-  document.getElementById("rgbc_reading").style.color = rgb_str;
 
+  document.getElementById("rgbc_reading").style.color = rgb_str;
 }
 
 function handleNotifyGas(event) {
