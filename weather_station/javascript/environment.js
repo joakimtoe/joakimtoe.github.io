@@ -85,7 +85,7 @@ function getAll() {
       service.getCharacteristic(gasCharacteristicUUID)
       .then(handleGas),
       service.getCharacteristic(colorCharacteristicUUID)
-      .then(handleColor)      
+      .then(handleColor)
     ])
   })
   .catch(error => {
@@ -158,24 +158,24 @@ function disconnect() {
 function handleNotifyColor(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
-  
+
   let red = (value.getUint8(1) << 8) + value.getUint8(0) ;
-  
+  log('red: ' + red);
   let green = (value.getUint8(3) << 8) + value.getUint8(2) ;
-  
+  log('green: ' + green);
   let blue = (value.getUint8(5) << 8) + value.getUint8(4) ;
-  
+  log('blue: ' + blue);
   let clear = (value.getUint8(7) << 8) + value.getUint8(6) ;
-  
+  log('clear: ' + clear);
   log('r ' + red + 'g ' + green + 'b ' + blue + 'c ' + clear);
-  
+
   let red_8   = (red / 65536.0) * 256.0;
   let green_8 = (green / 65536.0) * 256.0;
   let blue_8  = (blue / 65536.0) * 256.0;
-  
-  let rgb_str = '#' + red_8.toString(16) + green_8.toString(16) + blue_8.toString(16); 
+
+  let rgb_str = '#' + red_8.toString(16) + green_8.toString(16) + blue_8.toString(16);
   log('rgb_str: ' + rgb_str);
-  //document.getElementById("rgbc_reading").style.color = rbg_str;
+  document.getElementById("rgbc_reading").style.color = rbg_str;
 
 }
 
