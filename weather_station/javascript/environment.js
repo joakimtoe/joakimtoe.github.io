@@ -172,20 +172,20 @@ function handleNotifyColor(event) {
   let g_ratio = g / (r+g+b)
   let b_ratio = b / (r+g+b)
 
-  let r_8 = r_ratio * 256.0 * 3 * (c / 500)
-  if (r_8 > 256)
+  let r_8 = r_ratio * 255.0 * 3 * (c / 500)
+  if (r_8 > 255)
   {
-      r_8 = 256
+      r_8 = 255
   }
-  let g_8 = g_ratio * 256.0 * 3 * (c / 500)
-  if (g_8 > 256)
+  let g_8 = g_ratio * 255.0 * 3 * (c / 500)
+  if (g_8 > 255)
   {
-      g_8 = 256
+      g_8 = 255
   }
-  let b_8 = b_ratio * 256.0 * 3 * (c / 500)
-  if (b_8 > 256)
+  let b_8 = b_ratio * 255.0 * 3 * (c / 500)
+  if (b_8 > 255)
   {
-      b_8 = 256
+      b_8 = 255
   }
   let rgb_str = "rgb("+r_8.toFixed(0)+","+g_8.toFixed(0)+","+b_8.toFixed(0)+")";
   log('r ' + r_8 + ' - g ' + g_8 + ' - b ' + b_8 + ' - ' + rgb_str);
