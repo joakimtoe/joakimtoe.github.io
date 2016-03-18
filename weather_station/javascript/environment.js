@@ -172,17 +172,17 @@ function handleNotifyColor(event) {
   let g_ratio = g / (r+g+b)
   let b_ratio = b / (r+g+b)
 
-  let r_8 = r_ratio * 256.0*3
+  let r_8 = r_ratio * 256.0 * 3 * (c / 800)
   if (r_8 > 256)
   {
       r_8 = 256
   }
-  let g_8 = g_ratio * 256.0*3
+  let g_8 = g_ratio * 256.0 * 3 * (c / 800)
   if (g_8 > 256)
   {
       g_8 = 256
   }
-  let b_8 = b_ratio * 256.0*3
+  let b_8 = b_ratio * 256.0 * 3 * (c / 800)
   if (b_8 > 256)
   {
       b_8 = 256
