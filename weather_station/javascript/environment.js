@@ -55,6 +55,7 @@ function log(text) {
 }
 
 function getAll() {
+  document.getElementById("rgbc_reading").style.color = rgb_str;  
   if (!navigator.bluetooth) {
       log('Web Bluetooth API is not available.\n' +
           'Please make sure the Web Bluetooth flag is enabled.');
@@ -159,22 +160,24 @@ function handleNotifyColor(event) {
   let value = event.target.value;
   value = value.buffer ? value : new DataView(value);
 
-  let red = (value.getUint8(1) << 8) + value.getUint8(0) ;
+  let r = (value.getUint8(1) << 8) + value.getUint8(0) ;
   //log('red: ' + red);
-  let green = (value.getUint8(3) << 8) + value.getUint8(2) ;
+  let g = (value.getUint8(3) << 8) + value.getUint8(2) ;
   //log('green: ' + green);
-  let blue = (value.getUint8(5) << 8) + value.getUint8(4) ;
+  let b = (value.getUint8(5) << 8) + value.getUint8(4) ;
   //log('blue: ' + blue);
-  let clear = (value.getUint8(7) << 8) + value.getUint8(6) ;
+  let c = (value.getUint8(7) << 8) + value.getUint8(6) ;
   //log('clear: ' + clear);
-
-  let clear_8  = (clear >> 8);
-  let red_8   = (red >> 8);
-  let green_8 = (green >> 8);
-  let blue_8  = (blue >> 8);
-  let rgb     = (red_8 << 16) + (green_8 << 8) + (blue_8);
-  let rgb_str = '#' + rgb.toString(16)
-  log('r ' + red_8 + ' - g ' + green_8 + ' - b ' + blue_8 + ' - rbg ' + rgb_str);
+  
+  let r_ratio = r / (r+g+b)
+  let g_ratio = g / (r+g+b)
+  let b_ratio = b / (r+g+b)
+  
+  let r_8 = r_ratio * 256.0
+  let g_8 = g_ratio * 256.0
+  let b_8 = b_ratio * 256.0
+  let rgb_str = "rgb("+r_8.toFixed(0)+","+g_8.toFixed(0)+","+b_8.toFixed(0)+")";
+  log('r ' + r_8 + ' - g ' + g_8 + ' - b ' + b_8 + ' - ' + rgb_str);
 
   document.getElementById("rgbc_reading").style.color = rgb_str;
   document.getElementById("rgbc_reading").innerHTML = 'RGBC';
