@@ -117,8 +117,8 @@ function handleHumidity(characteristic){
 function handleGas(characteristic){
   log('> handleGas()');
   gasChar = characteristic;
-  //gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
-  //return gasChar.startNotifications();
+  gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+  return gasChar.startNotifications();
 }
 
 function handleColor(characteristic){
