@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Weather Station</title>
+    <title>Sensors</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="Sensor tool for Web Bluetooth" />
+    <meta property="og:image" content="images/nordic_icon_144.png"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="custom.css">
     <link rel="stylesheet" href="sticky-footer-navbar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="javascript/weather_station.js"></script>
-    <script src="javascript/geolocation.js"></script>
-    <script src="javascript/cloud.js"></script>
+    <script src="javascript/sensors.js"></script>
   </head>
   <body>
 
@@ -34,36 +34,8 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Live Demos
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Thermometer</a></li>
-            <li><a href="#">Barometer</a></li>
-            <li><a href="#">Accelerometer</a></li>
-            <li><a href="#">Gyroscope</a></li>
-            <li><a href="#">Hygrometer</a></li>
-            <li><a href="#">Compass</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Source Code
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Thermometer</a></li>
-            <li><a href="#">Barometer</a></li>
-            <li><a href="#">Accelerometer</a></li>
-            <li><a href="#">Gyroscope</a></li>
-            <li><a href="#">Hygrometer</a></li>
-            <li><a href="#">Compass</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Data Sheets
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Thermometer</a></li>
-            <li><a href="#">Barometer</a></li>
-            <li><a href="#">Accelerometer</a></li>
-            <li><a href="#">Gyroscope</a></li>
-            <li><a href="#">Hygrometer</a></li>
-            <li><a href="#">Compass</a></li>
+            <li><a href="weather_station.html">Weather Station</a></li>
+            <li><a href="environment.html">Environment</a></li>
           </ul>
         </li>
         <li><a href="#">About</a></li>
@@ -77,54 +49,124 @@
 
     <div class="container">
       <div class="page-header text-muted">
-        <h1>Weather Station</h1>
+        <h1>Sensors</h1>
         <div class="btn-group">
           <button type="button" class="btn btn-info" id="connect"><span class="glyphicon glyphicon-flash"></span> CONNECT</button>
           <button type="button" class="btn btn-info" id="disconnect"><span class="glyphicon glyphicon-remove-circle"></span> DISCONNECT</button>
-          <a href="https://data.sparkfun.com/nordic_weather" target="_blank" class="btn btn-info" role="button"><span class="glyphicon glyphicon-cloud"></span> LOG</a>
-          <a href="#" data-toggle="modal" class="btn btn-info" data-target="#configureModal"><span class="glyphicon glyphicon-wrench"></span> CONF</a>
         </div>
       </div>
       <div class="row">
+        <!-- Temperature --> 
         <div class="col-sm-4">
           <div class="panel panel-default">
             <div class="panel-heading-small">
                 <span class="glyphicon glyphicon-fire gi-2x panel-icon-color pull-right"></span>
                 <h2 class="panel-title text-1-25x">Temperature</h2>
             </div>
-            <div class="panel-body-small text-center text-3x" id="temperature_reading">
-              0&deg;C
-            </div>
+            <div class="whole-width">
+              <div class="panel-body-small text-3x align" id="temperature_reading">
+                0
+              </div>
+              <div class="panel-body-small text-3x align" id="temperature_unit">
+                &deg;C
+              </div>
+            </div>             
             <div class="panel-footer-small">.
             </div>
           </div>
         </div>
+        <!-- Pressure -->
         <div class="col-sm-4">
           <div class="panel panel-default">
             <div class="panel-heading-small">
               <span class="glyphicon glyphicon-cloud gi-2x panel-icon-color pull-right"></span>
               <h3 class="panel-title text-1-25x">Pressure</h3>
             </div>
-            <div class="panel-body-small text-center text-3x" id="pressure_reading">
-              0Pa
-            </div>
+            <div class="whole-width">
+              <div class="panel-body-small text-3x align" id="pressure_reading">
+                0
+              </div>
+              <div class="panel-body-small text-3x align" id="pressure_unit">
+                hPa
+              </div>
+            </div>            
             <div class="panel-footer-small">.
             </div>
           </div>
         </div>
+        <!-- Humidity -->
         <div class="col-sm-4">
           <div class="panel panel-default">
             <div class="panel-heading-small">
               <span class="glyphicon glyphicon-tint gi-2x panel-icon-color pull-right"></span>
               <h3 class="panel-title text-1-25x">Humidity</h3>
             </div>
-            <div class="panel-body-small text-center text-3x" id="humidity_reading">
-              0%
+            <div class="whole-width">
+              <div class="panel-body-small text-3x align" id="humidity_reading">
+                0
+              </div>
+              <div class="panel-body-small text-3x align" id="humidity_unit">
+                %
+              </div>
             </div>
             <div class="panel-footer-small">.
             </div>
           </div>
         </div>
+      </div>
+      <div class="row">
+        <!-- Gas eCO2 -->
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading-small">
+              <span class="glyphicon glyphicon-tree-deciduous gi-2x panel-icon-color pull-right"></span>
+              <h3 class="panel-title text-1-25x">eCO2</h3>
+            </div>
+            <div class="whole-width">
+              <div class="panel-body-small text-3x align" id="eco2_reading">
+                0
+              </div>
+              <div class="panel-body-small text-3x align" id="eco2_unit">
+                ppm
+              </div>
+            </div>
+            <div class="panel-footer-small">.
+            </div>
+          </div>
+        </div>
+        <!-- Gas TVOC -->
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading-small">
+              <span class="glyphicon glyphicon-tree-conifer gi-2x panel-icon-color pull-right"></span>
+              <h3 class="panel-title text-1-25x">TVOC</h3>
+            </div>
+            <div class="whole-width">
+              <div class="panel-body-small text-3x align" id="tvoc_reading">
+                0
+              </div>
+              <div class="panel-body-small text-3x align" id="tvoc_unit">
+                ppb
+              </div>
+            </div>
+            <div class="panel-footer-small">.
+            </div>
+          </div>
+        </div>
+        <!-- Color -->
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading-small">
+              <span class="glyphicon glyphicon glyphicon-lamp gi-2x panel-icon-color pull-right"></span>
+              <h3 class="panel-title text-1-25x">Color</h3>
+            </div>
+            <div class="panel-body-small text-center text-3x" id="rgbc_reading">
+              <b>RGB</b>
+            </div>
+            <div class="panel-footer-small">.
+            </div>
+          </div>
+        </div>        
       </div>
     </div>
 

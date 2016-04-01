@@ -37,7 +37,6 @@ var buttonCharacteristicUUID = 'C7AE0003-3266-4A5C-859F-0F4799146BB5';
 var bleDevice;
 var bleServer;
 var bleService;
-var tempBleService;
 var gasChar;
 var temperatureChar;
 var pressureChar;
@@ -50,7 +49,7 @@ window.onload = function(){
 };
 
 function log(text) {
-    document.querySelector('#log').textContent += text + '\n';
+    //document.querySelector('#log').textContent += text + '\n';
     console.log(text);
 }
 
@@ -66,7 +65,8 @@ function getAll() {
     {services: [weatherStationServiceUUID]}
     ]
   })
-  .then(device => device.connectGATT())
+  //.then(device => device.connectGATT())
+  .then(device => device.gatt.connect())
   .then(server => {
     bleServer = server;
     log('Got bleServer');
@@ -86,7 +86,7 @@ function getAll() {
       .then(handleGas),
       service.getCharacteristic(colorCharacteristicUUID)
       .then(handleColor)
-    ])
+    ]);
   })
   .catch(error => {
     log('> getAll() ' + error);
@@ -94,52 +94,73 @@ function getAll() {
 }
 
 function handlePressure(characteristic){
-  log('> handlePressure()');
+  log('> handlePressure() - addEventListener');
   pressureChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyPressure);
-  //return characteristic.startNotifications();
+  pressureChar.addEventListener('characteristicvaluechanged',handleNotifyPressure);
+  log('> handlePressure() - startNotifications');
+  return pressureChar.startNotifications();
 }
 
 function handleTemperature(characteristic){
-  log('> handleTemperature()');
+  log('> handleTemperature() - addEventListener');
   temperatureChar = characteristic;
-  //temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
-  //return temperatureChar.startNotifications();
+  temperatureChar.addEventListener('characteristicvaluechanged',handleNotifyTemperature);
+  log('> handleTemperature() - startNotifications');
+  return temperatureChar.startNotifications();
 }
 
 function handleHumidity(characteristic){
-  log('> handleHumidity()');
+  log('> handleHumidity() - addEventListener');
   humidityChar = characteristic;
-  //characteristic.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
-  //return characteristic.startNotifications();
+  humidityChar.addEventListener('characteristicvaluechanged',handleNotifyHumidity);
+  log('> handleHumidity() - startNotifications');
+  return humidityChar.startNotifications();
 }
 
 function handleGas(characteristic){
-  log('> handleGas()');
+  log('> handleGas() - addEventListener');
   gasChar = characteristic;
   gasChar.addEventListener('characteristicvaluechanged',handleNotifyGas);
+  log('> handleGas() - startNotifications');
   return gasChar.startNotifications();
 }
 
 function handleColor(characteristic){
-  log('> handleColor()');
+  log('> handleColor() - addEventListener');
   colorChar = characteristic;
   colorChar.addEventListener('characteristicvaluechanged',handleNotifyColor);
+  log('> handleColor() - startNotifications');
   return colorChar.startNotifications();
 }
 
 function stopAll() {
-    log('> stopAll()')
+    log('> stopAll()');
+    
     gasChar.stopNotifications().then(() => {
         log('> Gas notification stopped');
-        gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas)
+        gasChar.removeEventListener('characteristicvaluechanged',handleNotifyGas);
         log('> Gas notification handler removed');
     });
     colorChar.stopNotifications().then(() => {
-        log('> Gas notification stopped');
-        colorChar.removeEventListener('characteristicvaluechanged',handleNotifyColor)
-        log('> Gas notification handler removed');
-    })
+        log('> Color notification stopped');
+        colorChar.removeEventListener('characteristicvaluechanged',handleNotifyColor);
+        log('> Color notification handler removed');
+    });
+    temperatureChar.stopNotifications().then(() => {
+        log('> Temp notification stopped');
+        temperatureChar.removeEventListener('characteristicvaluechanged',handleNotifyTemperature);
+        log('> Temp notification handler removed');
+    });
+    humidityChar.stopNotifications().then(() => {
+        log('> Humid notification stopped');
+        humidityChar.removeEventListener('characteristicvaluechanged',handleNotifyHumidity);
+        log('> Humid notification handler removed');
+    });
+    pressureChar.stopNotifications().then(() => {
+        log('> Pressure notification stopped');
+        pressureChar.removeEventListener('characteristicvaluechanged',handleNotifyPressure);
+        log('> Pressure notification handler removed');
+    })    
     .then(disconnect)
     .catch(error => {
       log('> stopAll() ' + error);
@@ -173,30 +194,30 @@ function handleNotifyColor(event) {
   let c = (value.getUint8(7) << 8) + value.getUint8(6) ;
   //log('clear: ' + clear);
 
-  let r_ratio = r / (r+g+b)
-  let g_ratio = g / (r+g+b)
-  let b_ratio = b / (r+g+b)
+  let r_ratio = r / (r+g+b);
+  let g_ratio = g / (r+g+b);
+  let b_ratio = b / (r+g+b);
 
-  let r_8 = r_ratio * 255.0 * 3 * (c / 400)
+  let r_8 = r_ratio * 255.0 * 3 * (c / 400);
   if (r_8 > 255)
   {
-      r_8 = 255
+      r_8 = 255;
   }
-  let g_8 = g_ratio * 255.0 * 3 * (c / 400)
+  let g_8 = g_ratio * 255.0 * 3 * (c / 400);
   if (g_8 > 255)
   {
-      g_8 = 255
+      g_8 = 255;
   }
-  let b_8 = b_ratio * 255.0 * 3 * (c / 400)
+  let b_8 = b_ratio * 255.0 * 3 * (c / 400);
   if (b_8 > 255)
   {
-      b_8 = 255
+      b_8 = 255;
   }
   let rgb_str = "rgb("+r_8.toFixed(0)+","+g_8.toFixed(0)+","+b_8.toFixed(0)+")";
   log('r ' + r_8 + ' - g ' + g_8 + ' - b ' + b_8 + ' - ' + rgb_str);
 
   document.getElementById("rgbc_reading").style.color = rgb_str;
-  document.getElementById("rgbc_reading").innerHTML = 'RGBC';
+  document.getElementById("rgbc_reading").innerHTML = '<b>RGB</b>';
 }
 
 function handleNotifyGas(event) {
@@ -204,11 +225,11 @@ function handleNotifyGas(event) {
   value = value.buffer ? value : new DataView(value);
   let eco2_ppm = (value.getUint8(1) << 8) + value.getUint8(0) ;
   log('eCO2 is ' + eco2_ppm + 'ppm');
-  document.getElementById("eco2_reading").innerHTML = eco2_ppm + 'ppm';
+  document.getElementById("eco2_reading").innerHTML = eco2_ppm + ' ';
 
   let tvoc_ppb = (value.getUint8(3) << 8) + value.getUint8(2);
   log('TVOC is ' + tvoc_ppb + 'ppb');
-  document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + 'ppb';
+  document.getElementById("tvoc_reading").innerHTML = tvoc_ppb + ' ';
 }
 
 function handleNotifyTemperature(event) {
@@ -217,7 +238,7 @@ function handleNotifyTemperature(event) {
   let temperature_int = value.getUint8(0);
   let temperature_dec = value.getUint8(1);
   log('Temperature is ' + temperature_int + '.' + temperature_dec + 'C');
-  //document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + '&deg;C';
+  document.getElementById("temperature_reading").innerHTML = temperature_int + '.' + temperature_dec + ' ';
 }
 
 function handleNotifyHumidity(event) {
@@ -225,7 +246,7 @@ function handleNotifyHumidity(event) {
   value = value.buffer ? value : new DataView(value);
   let humidity_int = value.getUint8(0);
   log('Humidity is ' + humidity_int + '%');
-  //document.getElementById("humidity_reading").innerHTML = humidity_int +"%";
+  document.getElementById("humidity_reading").innerHTML = humidity_int +" ";
 }
 
 function handleNotifyPressure(event) {
@@ -236,5 +257,5 @@ function handleNotifyPressure(event) {
   let pressure_pascal = pressure_integer + pressure_decimal / 1000;
   let pressure_hpascal = pressure_pascal / 100;
   log('Pressure is ' + pressure_hpascal + 'hPa');
-  //document.getElementById("pressure_reading").innerHTML = pressure_hpascal.toFixed(3) + 'hPa';
+  document.getElementById("pressure_reading").innerHTML = pressure_hpascal.toFixed(3) + ' ';
 }
