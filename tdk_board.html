@@ -21,17 +21,24 @@ xhttp.onreadystatechange = function() {
 if (xhttp.readyState == XMLHttpRequest.DONE) {
     var respLines= this.responseText.split('\n');
     var text = "";
+    var get_score = false;
     for (i = 0; i < respLines.length; i++)
     {
         if (respLines[i].includes("Track:"))
         {
-            text += "<h1>" + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</h1>";
+            text += "<b>" + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b>";
         }
-        else if (respLines[i].includes("Drone:"))
+        else if (respLines[i].includes("250 Racer Advanced"))
         {
-            text += "<b>" + respLines[i].split("</B> ")[1].split("\n")[0] + "</b><br>"
+            get_score = true;
+            //text += "<b>" + respLines[i].split("</B> ")[1].split("\n")[0] + "</b><br>"
         }
-        else if (respLines[i].includes("[TDK]"))
+        else if (respLines[i].includes("250 Racer Custom") || respLines[i].includes("250 Racer Trainer"))
+        {
+            get_score = false;
+            //text += "<b>" + respLines[i].split("</B> ")[1].split("\n")[0] + "</b><br>"
+        }
+        else if (respLines[i].includes("[TDK]") && get_score)
         {
             var position = respLines[i-2].split("<p>")[1].split("</p>")[0]
             var name = respLines[i].split("</img>")[1].split("</p>")[0]
