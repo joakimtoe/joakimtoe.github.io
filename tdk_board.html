@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<div id="demo">
+</div>
+
+<script>
+
+function readBody(xhr) {
+    var data;
+    if (!xhr.responseType || xhr.responseType === "text") {
+        data = xhr.responseText;
+    } else if (xhr.responseType === "document") {
+        data = xhr.responseXML;
+    } else {
+        data = xhr.response;
+    }
+    return data;
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (xhttp.readyState == XMLHttpRequest.DONE) {
+    var respLines= this.responseText.split('\n');
+    var text = "";
+    for (i = 0; i < respLines.length; i++)
+    {
+        if (respLines[i].includes("Track:"))
+        {
+            text += "<h1>" + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</h1>";
+        }
+        else if (respLines[i].includes("Drone:"))
+        {
+            text += "<b>" + respLines[i].split("</B> ")[1].split("\n")[0] + "</b><br>"
+        }
+        else if (respLines[i].includes("[TDK]"))
+        {
+            var position = respLines[i-2].split("<p>")[1].split("</p>")[0]
+            var name = respLines[i].split("</img>")[1].split("</p>")[0]
+            var time = respLines[i+4].split("<p>")[1].split("</p>")[0]
+            text += "<pre>" + position + " -" + name + " - " + time + "</pre>"
+        }
+    }
+    document.getElementById("demo").innerHTML = text;
+    //console.log(text);
+}
+};
+xhttp.open("GET", 'http://cors.io/?http://dronesimulation.co.uk/events/evlbs.pl', true);
+xhttp.send(null);
+
+</script>
