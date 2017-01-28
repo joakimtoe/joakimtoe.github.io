@@ -13,25 +13,9 @@ td, th {
 </div>
 
 <script>
-coreurl =
-droneurls = ["https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK002",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK003",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK004",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK005",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK006",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK007",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK008",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK009",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK010",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK011",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK012",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK013",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK014",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK015",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK016",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK017",
-            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK018",
-          ]
+mainpageurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl"
+coreurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID="
+droneurls = []
 
 
 AjaxRequest = function(url, callback, failCallback) {
@@ -139,7 +123,34 @@ var failtracksCallback = function(url)
   }
 }
 
-AjaxRequestsMulti(droneurls, alltracksCallback, failtracksCallback)
+/*
+  Callback for the mainpage request.
+  This function fetches all the current TRACK_ID's on the list
+  and uses this for getting results from all tracks.
+*/
+
+getmainPageCallback = function(text, url)
+{
+  // First get all TRACK_ID's from the main page
+  var respLines= text.split('\n');
+  for(line = 0; line<respLines.length; line++)
+  {
+    // console.log(respLines[line])
+    if(respLines[line].includes("TRACK_ID"))
+    {
+      droneurls.push(coreurl + (respLines[line].split("TRACK_ID=")[1].split("'")[0]))
+    }
+    // console.log(droneurls)
+  }
+  //console.log(droneurls)
+
+  // Now go fetch all the results
+  AjaxRequestsMulti(droneurls, alltracksCallback, failtracksCallback)
+}
+
+AjaxRequest(mainpageurl, getmainPageCallback, getmainPageCallback)
+
+
 
 
 </script>
