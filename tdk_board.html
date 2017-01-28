@@ -13,22 +13,88 @@ td, th {
 </div>
 
 <script>
-function readBody(xhr) {
-    var data;
-    if (!xhr.responseType || xhr.responseType === "text") {
-        data = xhr.responseText;
-    } else if (xhr.responseType === "document") {
-        data = xhr.responseXML;
-    } else {
-        data = xhr.response;
-    }
-    return data;
-}
+coreurl =
+droneurls = ["https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK002",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK003",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK004",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK005",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK006",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK007",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK008",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK009",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK010",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK011",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK012",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK013",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK014",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK015",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK016",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK017",
+            "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID=TK018",
+          ]
 
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-if (xhttp.readyState == XMLHttpRequest.DONE) {
-    var respLines= this.responseText.split('\n');
+
+AjaxRequest = function(url, callback, failCallback) {
+  var xmlhttp;
+
+  if (window.XMLHttpRequest)
+    xmlhttp=new XMLHttpRequest();
+  else
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4) {
+      if (xmlhttp.status == 200)
+        callback(xmlhttp.responseText, url);
+      else
+        failCallback(url);
+    }
+  };
+
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+};
+
+AjaxRequestsMulti = function(urls, callbackMulti, failCallbackMulti)
+{
+  var isAllCallsCompleted = false;
+  var isCallFailed = false;
+  var data = {};
+
+  for (var i=0; i<urls.length; i++) {
+    var callback = function(responseText, url) {
+      if (isCallFailed) return;
+
+      data[url] = responseText;
+
+      // get size of data
+      var size = 0;
+      for (var index in data) {
+        if (data.hasOwnProperty(index))
+          size ++;
+      }
+
+      if (size == urls.length)
+        // all AJAX requests are completed successfully
+        callbackMulti(data);
+    };
+
+    var failCallback = function(url) {
+      isCallFailed = true;
+      failCallbackMulti(url);
+    };
+
+    AjaxRequest(urls[i], callback, failCallback);
+  }
+};
+
+var alltracksCallback = function(data) {
+  //var respLines= data.responseText.split('\n')
+  //console.log(data[droneurls[0]])
+  var finalText = ""
+  for (track = 0; track < droneurls.length; track++)
+  {
+    var respLines= data[droneurls[track]].split('\n');
     var text = "<table>";
     var get_score = false;
 
@@ -58,11 +124,22 @@ if (xhttp.readyState == XMLHttpRequest.DONE) {
         }
     }
     text += "</table>"
-    document.getElementById("demo").innerHTML = text;
-    //console.log(text);
+    console.log("here");
+    finalText += text
+
+  }
+  document.getElementById("demo").innerHTML = finalText;
 }
-};
-xhttp.open("GET", 'https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl', true);
-xhttp.send(null);
+
+var failtracksCallback = function(url)
+{
+  for(i in url)
+  {
+    console.log("Failed to get " + i)
+  }
+}
+
+AjaxRequestsMulti(droneurls, alltracksCallback, failtracksCallback)
+
 
 </script>
