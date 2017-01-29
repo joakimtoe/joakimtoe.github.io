@@ -7,15 +7,115 @@ td, th {
 
 </style>
 </head>
-<h2>TDK Leaderboard</h2>
-<div id="demo">
-    Loading data, please wait...
-</div>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table> <!-- Start the result table -->
+  <table id="logo" width="1200" height="300" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td colspan="4">
+        <img src="images/TDK-LEADERBOARD-LOGO.jpg" width="600" height="231" alt="">
+        <div id="loading_text">
+
+          <p>Getting leaderboards, please wait</p>
+          </td>
+        </div>
+    </tr>
+      <td id="img_track1">
+      <td id="img_track2">
+      <td id="img_track3">
+          <td id="img_track4">
+        </tr>
+
+    <tr>
+      <td width="500" height="84" valign="top">
+        <div id="track1"</div>
+      </td>
+      <td width="500" height="84" valign="top">
+        <div id="track2"</div>
+      </td>
+      <td width="500" height="84" valign="top">
+        <div id="track3"</div>
+      </td>
+      <td width="500" height="84" valign="top">
+        <div id="track4"</div>
+      </td>
+    </tr>
+
+
+  </tr>
+    <td id="img_track5">
+    <td id="img_track6">
+    <td id="img_track7">
+      <td id="img_track8">
+    </tr>
+
+  <tr>
+    <td width="500" height="84" valign="top">
+      <div id="track5"</div>
+    </td>
+    <td width="500" height="84" valign="top">
+      <div id="track6"</div>
+    </td>
+    <td width="500" height="84" valign="top">
+      <div id="track7"</div>
+    </td>
+    <td width="500" height="84" valign="top">
+      <div id="track8"</div>
+    </td>
+  </tr>
+
+</tr>
+  <td id="img_track9">
+  <td id="img_track10">
+  <td id="img_track11">
+  <td id="img_track12">
+</tr>
+
+<tr>
+  <td width="500" height="84" valign="top">
+    <div id="track9"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track10"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track11"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track12"</div>
+  </td>
+</tr>
+
+</tr>
+  <td id="img_track13">
+  <td id="img_track14">
+  <td id="img_track15">
+  <td id="img_track16">
+</tr>
+
+<tr>
+  <td width="500" height="84" valign="top">
+    <div id="track13"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track14"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track15"</div>
+  </td>
+  <td width="500" height="84" valign="top">
+    <div id="track16"</div>
+  </td>
+</tr>
+</table>
+
+
 
 <script>
 mainpageurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl"
 coreurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID="
 droneurls = []
+track_imgs = []
+tracks = []
 
 
 AjaxRequest = function(url, callback, failCallback) {
@@ -79,7 +179,7 @@ var alltracksCallback = function(data) {
   for (track = 0; track < droneurls.length; track++)
   {
     var respLines= data[droneurls[track]].split('\n');
-    var text = "<table>";
+    var text = "";
     var get_score = false;
 
     for (i = 0; i < respLines.length; i++)
@@ -99,20 +199,20 @@ var alltracksCallback = function(data) {
         }
         else if (respLines[i].includes("[TDK]") && get_score)
         {
-            var position = "<td>" + respLines[i-2].split("<p>")[1].split("</p>")[0] + "</td>"
-            var name = "<td>" + respLines[i].split("</img>")[1].split("</p>")[0] + "</td>"
-            var time = "<td>" + respLines[i+4].split("<p>")[1].split("</p>")[0] + "</td>"
-            var gap = "<td>" + respLines[i+6].split("<p>")[1].split("</p>")[0] + "</td>"
-            var missed = "<td>" + respLines[i+8].split("<p>")[1].split("</p>")[0] + "</td>"
-            text += "<tr>" + position + name + time + gap + missed + "</tr>"
+            var position ="</br>" + respLines[i-2].split("<p>")[1].split("</p>")[0]
+            var name = respLines[i].split("</img>")[1].split("</p>")[0] + "    "
+            var time = respLines[i+4].split("<p>")[1].split("</p>")[0] + "    "
+            var gap = respLines[i+6].split("<p>")[1].split("</p>")[0] + "    "
+            var missed = respLines[i+8].split("<p>")[1].split("</p>")[0]
+            text +=  position + name + time + gap + missed
         }
     }
-    text += "</table>"
-    console.log("here");
-    finalText += text
+    document.getElementById(tracks[track]).innerHTML = text;
 
   }
-  document.getElementById("demo").innerHTML = finalText;
+  // Clear "please wait message"
+  document.getElementById("loading_text").innerHTML = ""
+  //document.getElementById("test").innerHTML = finalText;
 }
 
 var failtracksCallback = function(url)
@@ -132,16 +232,27 @@ var failtracksCallback = function(url)
 getmainPageCallback = function(text, url)
 {
   // First get all TRACK_ID's from the main page
+  var track_num = 0
   var respLines= text.split('\n');
   for(line = 0; line<respLines.length; line++)
   {
     // console.log(respLines[line])
     if(respLines[line].includes("TRACK_ID"))
     {
+      track_imgs.push(respLines[line].split('src=')[1].split(' onClick=')[0])
       droneurls.push(coreurl + (respLines[line].split("TRACK_ID=")[1].split("'")[0]))
+      track_num++
+      tracks.push("track" + track_num)
     }
-    // console.log(droneurls)
   }
+  document.getElementById("loading_text").innerHTML = "Loading " + (track_num-1).toString() + " tracks... Please wait!"
+  for (img = 0; img < track_num; img++)
+  {
+    console.log(track_imgs[img])
+      document.getElementById("img_" + tracks[img]).innerHTML = "<img src= " + track_imgs[img] + 'width="400" height="172" alt=""></td>'
+  }
+
+  //console.log(track_imgs)
   //console.log(droneurls)
 
   // Now go fetch all the results
@@ -154,3 +265,4 @@ AjaxRequest(mainpageurl, getmainPageCallback, getmainPageCallback)
 
 
 </script>
+</body>
