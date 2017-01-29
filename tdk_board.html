@@ -9,12 +9,12 @@ td, th {
 </head>
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table> <!-- Start the result table -->
-  <table id="results" width="1600" height="300" border="0" cellpadding="0" cellspacing="0">
+  <table id="results" width="1200" height="300" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
     <tr>
       <td colspan="4" style="text-align:center;">
         <img src="images/TDK-LEADERBOARD-LOGO.jpg" width="600" height="231" alt="">
         <div id="loading_text">
-          <p>Getting leaderboards, please wait</p>
+          Finding all tracks, please wait.
         </div>
       </td>
     </tr>
@@ -185,7 +185,7 @@ var alltracksCallback = function(data) {
     {
         if (respLines[i].includes("Track:"))
         {
-            text += "<tr><td></td><td><b>" + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b></td></tr>"
+            text += '<b>' + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b>"
         }
         else if (respLines[i].includes("250 Racer Advanced"))
         {
@@ -244,11 +244,11 @@ getmainPageCallback = function(text, url)
       tracks.push("track" + track_num)
     }
   }
-  document.getElementById("loading_text").innerHTML = "Loading " + (track_num).toString() + " tracks... Please wait!"
+  document.getElementById("loading_text").innerHTML = "Found " + (track_num).toString() + " tracks... Loading scores!"
   for (img = 0; img < track_num; img++)
   {
     console.log(track_imgs[img])
-      document.getElementById("img_" + tracks[img]).innerHTML = "<img src= " + track_imgs[img] + 'width="400" height="172" alt=""></td>'
+      document.getElementById("img_" + tracks[img]).innerHTML = "<img src= " + track_imgs[img] + 'width="300" height="172" alt=""></td>'
   }
 
   //console.log(track_imgs)
