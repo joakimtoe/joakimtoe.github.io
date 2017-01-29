@@ -11,19 +11,18 @@ td, th {
 <table> <!-- Start the result table -->
   <table id="logo" width="1200" height="300" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <td colspan="4">
+      <td colspan="4" text-align="right">
         <img src="images/TDK-LEADERBOARD-LOGO.jpg" width="600" height="231" alt="">
         <div id="loading_text">
-
           <p>Getting leaderboards, please wait</p>
-          </td>
         </div>
+      </td>
     </tr>
       <td id="img_track1">
       <td id="img_track2">
       <td id="img_track3">
-          <td id="img_track4">
-        </tr>
+      <td id="img_track4">
+    </tr>
 
     <tr>
       <td width="500" height="84" valign="top">
@@ -245,7 +244,7 @@ getmainPageCallback = function(text, url)
       tracks.push("track" + track_num)
     }
   }
-  document.getElementById("loading_text").innerHTML = "Loading " + (track_num-1).toString() + " tracks... Please wait!"
+  document.getElementById("loading_text").innerHTML = "Loading " + (track_num).toString() + " tracks... Please wait!"
   for (img = 0; img < track_num; img++)
   {
     console.log(track_imgs[img])
