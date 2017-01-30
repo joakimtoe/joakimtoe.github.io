@@ -147,7 +147,13 @@ AjaxRequestsMulti = function(urls, callbackMulti, failCallbackMulti)
   }
 };
 
+var set_track_title_font = function(text){
+  var wcolor = text.fontcolor("green")
+  return '<h4><b>' + wcolor + '</b></h4>'
+
+}
 var alltracksCallback = function(data) {
+  var hei = 1
   //var respLines= data.responseText.split('\n')
   //console.log(data[droneurls[0]])
   var finalText = ""
@@ -161,7 +167,9 @@ var alltracksCallback = function(data) {
     {
         if (respLines[i].includes("Track:"))
         {
+            // track_title =  respLines[i].split("</B> ")[1].split("<BR>")[0]
             text += '<b>' + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b>"
+            // text += set_track_title_font(track_title)
         }
         else if (respLines[i].includes("250 Racer Advanced"))
         {
@@ -174,13 +182,32 @@ var alltracksCallback = function(data) {
         }
         else if (respLines[i].includes("[TDK]") && get_score)
         {
-            var position ="</br>" + respLines[i-2].split("<p>")[1].split("</p>")[0]
+            var position = respLines[i-2].split("<p>")[1].split("</p>")[0]
             var name = respLines[i].split("</img>")[1].split("</p>")[0] + "    "
             var time = respLines[i+4].split("<p>")[1].split("</p>")[0] + "    "
-            var gap = respLines[i+6].split("<p>")[1].split("</p>")[0] + "    "
+            time = time.replace("m ", ":").replace(".",":").replace("s","")
+            var gap = respLines[i+6].split("<p>")[1].split("</p>")[0]
             var missed = respLines[i+8].split("<p>")[1].split("</p>")[0]
-            text +=  position + name + time + gap + missed
+
+            // position = '<div style="float:left;margin:0px 0px 0px 0px;">' + position + '</div>'
+            // name =     '<div style="float:left;margin:0px 0px 0px 10px;">' + name + '</div>'
+            // time =     '<div style="float:left;margin:0px 0px 0px 10px;;">' + time + '</div>'
+            // gap =      '<div style="float:right;margin:0px 20px 0px 0px">' + gap + '</div>'
+            // missed =   '<div style="float:right;margin:0px 10px 0px 0px">' + missed + '</div>'
+            text += '<table width="300"><tr>'
+            text += '<td style="width:10%">' + position + '</td>'
+            text += '<td style="width:45%">' + name + '</td>'
+            text += '<td style="width:20%">' + time + '</td>'
+            text += '<td>' + gap + '</td>'
+            text += '<td style="text-align:right">' + missed+ '</td>'
+            text += '</tr></table>'
+
         }
+    }
+    if(hei == 1)
+    {
+    console.log(text)
+    hei = 0
     }
     document.getElementById(tracks[track]).innerHTML = text;
 
@@ -223,7 +250,7 @@ getmainPageCallback = function(text, url)
   document.getElementById("loading_text").innerHTML = "Found " + (track_num).toString() + " tracks... Loading scores!"
   for (img = 0; img < track_num; img++)
   {
-    console.log(track_imgs[img])
+    // console.log(track_imgs[img])
       document.getElementById("img_" + tracks[img]).innerHTML = "<img src= " + track_imgs[img] + 'width="300" height="172" alt=""></td>'
   }
 
