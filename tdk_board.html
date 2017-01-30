@@ -13,6 +13,10 @@ tr#track_results{
   vertical-align: text-top;
 }
 
+html *
+{
+  font-family: Arial;
+}
 </style>
 </head>
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
@@ -162,13 +166,14 @@ var alltracksCallback = function(data) {
     var respLines= data[droneurls[track]].split('\n');
     var text = "";
     var get_score = false;
+    var results_fetched = 0;
 
     for (i = 0; i < respLines.length; i++)
     {
         if (respLines[i].includes("Track:"))
         {
             // track_title =  respLines[i].split("</B> ")[1].split("<BR>")[0]
-            text += '<b>' + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b>"
+            text += '<td style="text-align:center"><b>' + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b></td>"
             // text += set_track_title_font(track_title)
         }
         else if (respLines[i].includes("250 Racer Advanced"))
@@ -194,14 +199,23 @@ var alltracksCallback = function(data) {
             // time =     '<div style="float:left;margin:0px 0px 0px 10px;;">' + time + '</div>'
             // gap =      '<div style="float:right;margin:0px 20px 0px 0px">' + gap + '</div>'
             // missed =   '<div style="float:right;margin:0px 10px 0px 0px">' + missed + '</div>'
-            text += '<table width="300"><tr>'
+
+            text += '<table width="295" style="border-collapse: collapse; padding-bottom:10px;">'
+            if(results_fetched%2)
+            {
+              text += '<tr style="padding: 8px;">'
+            }
+            else
+            {
+              text += '<tr style="background-color: #EFF2FF;">'
+            }
             text += '<td style="width:10%">' + position + '</td>'
             text += '<td style="width:45%">' + name + '</td>'
             text += '<td style="width:20%">' + time + '</td>'
             text += '<td>' + gap + '</td>'
             text += '<td style="text-align:right">' + missed+ '</td>'
             text += '</tr></table>'
-
+            results_fetched++;
         }
     }
     if(hei == 1)
