@@ -4,12 +4,12 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+Christian Wilhelmsen - super awesome great dude
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself.
+I like cake, and people. I don't eat people, just cake.
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[my@email.com](mailto:please@dont.com)
