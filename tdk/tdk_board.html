@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<head>
+<style>
+td, th {
+    text-align: left;
+}
+
+#alt_color(even){
+  background-color: #f2f2f2;
+}
+
+tr#track_results{
+  vertical-align: text-top;
+}
+
+html *
+{
+  font-family: Arial;
+}
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table> <!-- Start the result table -->
+  <table id="results" width="1200" height="300" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+    <tr>
+      <td colspan="4" style="text-align:center;">
+        <img src="images/TDK-LEADERBOARD-LOGO.jpg" width="600" height="231" alt="">
+        <div id="loading_text">
+          Finding all tracks, please wait.
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td id="img_track1"></td>
+      <td id="img_track2"></td>
+      <td id="img_track3"></td>
+      <td id="img_track4"></td>
+    </tr>
+    <tr id="track_results">
+      <td id="track1"></td>
+      <td id="track2"></td>
+      <td id="track3"></td>
+      <td id="track4"></td>
+    </tr>
+
+    <tr>
+      <td id="img_track5">
+      <td id="img_track6">
+      <td id="img_track7">
+      <td id="img_track8">
+    </tr>
+
+    <tr id="track_results">
+      <td id="track5"></td>
+      <td id="track6"></td>
+      <td id="track7"></td>
+      <td id="track8"></td>
+    </tr>
+
+    <tr>
+      <td id="img_track9">
+      <td id="img_track10">
+      <td id="img_track11">
+      <td id="img_track12">
+    </tr>
+
+    <tr id="track_results">
+      <td id="track9"></td>
+      <td id="track10"></td>
+      <td id="track11"></td>
+      <td id="track12"></td>
+    </tr>
+
+    <tr>
+      <td id="img_track13">
+      <td id="img_track14">
+      <td id="img_track15">
+      <td id="img_track16">
+    </tr>
+
+    <tr id="track_results">
+      <td id="track13"></td>
+      <td id="track14"></td>
+      <td id="track15"></td>
+      <td id="track16"></td>
+    </tr>
+</table>
+
+
+
+<script>
+mainpageurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl"
+coreurl = "https://cors-anywhere.herokuapp.com/http://dronesimulation.co.uk/events/evlbs.pl?OM=DisplayLeaderboard&TRACK_ID="
+droneurls = []
+track_imgs = []
+tracks = []
+
+
+AjaxRequest = function(url, callback, failCallback) {
+  var xmlhttp;
+
+  if (window.XMLHttpRequest)
+    xmlhttp=new XMLHttpRequest();
+  else
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4) {
+      if (xmlhttp.status == 200)
+        callback(xmlhttp.responseText, url);
+      else
+        failCallback(url);
+    }
+  };
+
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+};
+
+AjaxRequestsMulti = function(urls, callbackMulti, failCallbackMulti)
+{
+  var isAllCallsCompleted = false;
+  var isCallFailed = false;
+  var data = {};
+
+  for (var i=0; i<urls.length; i++) {
+    var callback = function(responseText, url) {
+      if (isCallFailed) return;
+
+      data[url] = responseText;
+
+      // get size of data
+      var size = 0;
+      for (var index in data) {
+        if (data.hasOwnProperty(index))
+          size ++;
+      }
+
+      if (size == urls.length)
+        // all AJAX requests are completed successfully
+        callbackMulti(data);
+    };
+
+    var failCallback = function(url) {
+      isCallFailed = true;
+      failCallbackMulti(url);
+    };
+
+    AjaxRequest(urls[i], callback, failCallback);
+  }
+};
+
+var set_track_title_font = function(text){
+  var wcolor = text.fontcolor("green")
+  return '<h4><b>' + wcolor + '</b></h4>'
+
+}
+var alltracksCallback = function(data) {
+  var hei = 1
+  //var respLines= data.responseText.split('\n')
+  //console.log(data[droneurls[0]])
+  var finalText = ""
+  for (track = 0; track < droneurls.length; track++)
+  {
+    var respLines= data[droneurls[track]].split('\n');
+    var text = "";
+    var get_score = false;
+    var results_fetched = 0;
+
+    for (i = 0; i < respLines.length; i++)
+    {
+        if (respLines[i].includes("Track:"))
+        {
+            // track_title =  respLines[i].split("</B> ")[1].split("<BR>")[0]
+            text += '<td style="text-align:center"><b>' + respLines[i].split("</B> ")[1].split("<BR>")[0] + "</b></td>"
+            // text += set_track_title_font(track_title)
+        }
+        else if (respLines[i].includes("250 Racer Advanced"))
+        {
+            get_score = true;
+
+        }
+        else if (respLines[i].includes("250 Racer Custom") || respLines[i].includes("250 Racer Trainer"))
+        {
+            get_score = false;
+        }
+        else if (respLines[i].includes("[TDK]") && get_score)
+        {
+            var position = respLines[i-2].split("<p>")[1].split("</p>")[0]
+            var name = respLines[i].split("</img>")[1].split("</p>")[0] + "    "
+            var time = respLines[i+4].split("<p>")[1].split("</p>")[0] + "    "
+            time = time.replace("m ", ":").replace(".",":").replace("s","")
+            var gap = respLines[i+6].split("<p>")[1].split("</p>")[0]
+            var missed = respLines[i+8].split("<p>")[1].split("</p>")[0]
+
+            // position = '<div style="float:left;margin:0px 0px 0px 0px;">' + position + '</div>'
+            // name =     '<div style="float:left;margin:0px 0px 0px 10px;">' + name + '</div>'
+            // time =     '<div style="float:left;margin:0px 0px 0px 10px;;">' + time + '</div>'
+            // gap =      '<div style="float:right;margin:0px 20px 0px 0px">' + gap + '</div>'
+            // missed =   '<div style="float:right;margin:0px 10px 0px 0px">' + missed + '</div>'
+
+            text += '<table width="295" style="border-collapse: collapse; padding-bottom:10px;">'
+            if(results_fetched%2)
+            {
+              text += '<tr style="padding: 8px;">'
+            }
+            else
+            {
+              text += '<tr style="background-color: #EFF2FF;">'
+            }
+            text += '<td style="width:10%">' + position + '</td>'
+            text += '<td style="width:45%">' + name + '</td>'
+            text += '<td style="width:20%">' + time + '</td>'
+            text += '<td>' + gap + '</td>'
+            text += '<td style="text-align:right">' + missed+ '</td>'
+            text += '</tr></table>'
+            results_fetched++;
+        }
+    }
+    if(hei == 1)
+    {
+    console.log(text)
+    hei = 0
+    }
+    document.getElementById(tracks[track]).innerHTML = text;
+
+  }
+  // Clear "please wait message"
+  document.getElementById("loading_text").innerHTML = ""
+  //document.getElementById("test").innerHTML = finalText;
+}
+
+var failtracksCallback = function(url)
+{
+  for(i in url)
+  {
+    console.log("Failed to get " + i)
+  }
+}
+
+/*
+  Callback for the mainpage request.
+  This function fetches all the current TRACK_ID's on the list
+  and uses this for getting results from all tracks.
+*/
+
+getmainPageCallback = function(text, url)
+{
+  // First get all TRACK_ID's from the main page
+  var track_num = 0
+  var respLines= text.split('\n');
+  for(line = 0; line<respLines.length; line++)
+  {
+    // console.log(respLines[line])
+    if(respLines[line].includes("TRACK_ID"))
+    {
+      track_imgs.push(respLines[line].split('src=')[1].split(' onClick=')[0])
+      droneurls.push(coreurl + (respLines[line].split("TRACK_ID=")[1].split("'")[0]))
+      track_num++
+      tracks.push("track" + track_num)
+    }
+  }
+  document.getElementById("loading_text").innerHTML = "Found " + (track_num).toString() + " tracks... Loading scores!"
+  for (img = 0; img < track_num; img++)
+  {
+    // console.log(track_imgs[img])
+      document.getElementById("img_" + tracks[img]).innerHTML = "<img src= " + track_imgs[img] + 'width="300" height="172" alt=""></td>'
+  }
+
+  //console.log(track_imgs)
+  //console.log(droneurls)
+
+  // Now go fetch all the results
+  AjaxRequestsMulti(droneurls, alltracksCallback, failtracksCallback)
+}
+
+AjaxRequest(mainpageurl, getmainPageCallback, getmainPageCallback)
+
+
+
+
+</script>
+</body>
